@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "name": "先生成人设图，再做构图参考替换",
+  "description": "官方预设。先用角色描述生成人设图，再把它当人设参考，和物件设定图一起替换内容参考图里的对应元素。",
+  "language": "zh",
+  "slots": {
+    "char_desc": {"node": "char_desc", "param": "text", "label": "角色描述", "hint": "生成人设图用的提示词，原样发送"},
+    "char_size": {"node": "gen_char", "param": "size", "label": "人设图尺寸", "default": "1024x1536"},
+    "char_quality": {"node": "gen_char", "param": "quality", "label": "人设图质量档", "default": "high"},
+    "item": {"node": "item", "kind": "image", "label": "物件设定图"},
+    "item_role": {"node": "s", "param": "images.1.role", "label": "物件设定图是什么", "hint": "一句话，如：匕首设定"},
+    "ref": {"node": "ref", "kind": "image", "label": "内容参考图"},
+    "style": {"node": "style", "param": "text", "label": "画法段"},
+    "replace": {"node": "s", "param": "replace", "kind": "lines", "label": "物件指向替换", "hint": "逐条写：参考图里哪个元素换成哪张设定图、保留哪些、画面里有没有别的主体。用 {{char}} {{item}} {{ref}} 指代图片，编号自动生成。"},
+    "action": {"node": "s", "param": "action", "label": "动作描述", "hint": "谁、从哪到哪、做什么动作、作用在哪里"},
+    "size_note": {"node": "s", "param": "size_note", "label": "目标尺寸", "required": false, "hint": "如：最终显示在约 130×65 的小图窗、一眼识别。"},
+    "size": {"node": "gen", "param": "size", "label": "出图尺寸", "default": "2048x1024"},
+    "quality": {"node": "gen", "param": "quality", "label": "质量档", "default": "high", "hint": "low / medium / high / xhigh / max"},
+    "background": {"node": "gen", "param": "background", "label": "背景", "required": false, "hint": "transparent / opaque / auto"}
+  },
+  "nodes": [
+    {"id": "char_desc", "type": "text", "title": "角色描述"},
+    {"id": "gen_char", "type": "generate", "title": "生成：人设图", "params": {"model": "gpt-image-2.5-sunburst"}, "inputs": {"prompt": "char_desc"}},
+    {"id": "out_char", "type": "output", "title": "人设图", "params": {"name": "人设图"}, "inputs": {"image": "gen_char"}},
+    {"id": "item", "type": "image", "title": "物件设定图"},
+    {"id": "ref", "type": "image", "title": "内容参考图"},
+    {"id": "style", "type": "text", "title": "画法段"},
+    {
+      "id": "s",
+      "type": "structure",
+      "title": "结构",
+      "params": {
+        "images": [
+          {"name": "char", "kind": "setting", "role": "人设"},
+          {"name": "item", "kind": "setting"},
+          {"name": "ref", "kind": "content_ref"}
+        ]
+      },
+      "inputs": {"char": "gen_char", "item": "item", "ref": "ref", "style": "style"}
+    },
+    {"id": "preview", "type": "preview", "title": "预览", "inputs": {"request": "s"}},
+    {"id": "gen", "type": "generate", "title": "生成：成图", "params": {"model": "gpt-image-2.5-sunburst"}, "inputs": {"prompt": "preview"}},
+    {"id": "clean", "type": "postprocess", "title": "后处理", "inputs": {"image": "gen"}},
+    {"id": "out", "type": "output", "title": "输出", "inputs": {"image": "clean"}}
+  ]
+}

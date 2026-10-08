@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "name": "人设＋物件＋构图参考替换",
+  "description": "官方预设。用人设图和物件设定图，替换内容参考图里的对应元素；构图和透视跟内容参考图走（特调暗杀的做法）。",
+  "language": "zh",
+  "slots": {
+    "char": {"node": "char", "kind": "image", "label": "人设图"},
+    "item": {"node": "item", "kind": "image", "label": "物件设定图"},
+    "item_role": {"node": "s", "param": "images.1.role", "label": "物件设定图是什么", "hint": "一句话，如：匕首设定"},
+    "ref": {"node": "ref", "kind": "image", "label": "内容参考图"},
+    "style": {"node": "style", "param": "text", "label": "画法段"},
+    "replace": {"node": "s", "param": "replace", "kind": "lines", "label": "物件指向替换", "hint": "逐条写：参考图里哪个元素换成哪张设定图、保留哪些、画面里有没有别的主体。用 {{char}} {{item}} {{ref}} 指代图片，编号自动生成。"},
+    "action": {"node": "s", "param": "action", "label": "动作描述", "hint": "谁、从哪到哪、做什么动作、作用在哪里"},
+    "size_note": {"node": "s", "param": "size_note", "label": "目标尺寸", "required": false, "hint": "如：最终显示在约 130×65 的小图窗、一眼识别。"},
+    "size": {"node": "gen", "param": "size", "label": "出图尺寸", "default": "2048x1024"},
+    "quality": {"node": "gen", "param": "quality", "label": "质量档", "default": "high", "hint": "low / medium / high / xhigh / max"},
+    "background": {"node": "gen", "param": "background", "label": "背景", "required": false, "hint": "transparent / opaque / auto"}
+  },
+  "nodes": [
+    {"id": "char", "type": "image", "title": "人设图"},
+    {"id": "item", "type": "image", "title": "物件设定图"},
+    {"id": "ref", "type": "image", "title": "内容参考图"},
+    {"id": "style", "type": "text", "title": "画法段"},
+    {
+      "id": "s",
+      "type": "structure",
+      "title": "结构",
+      "params": {
+        "images": [
+          {"name": "char", "kind": "setting", "role": "人设"},
+          {"name": "item", "kind": "setting"},
+          {"name": "ref", "kind": "content_ref"}
+        ]
+      },
+      "inputs": {"char": "char", "item": "item", "ref": "ref", "style": "style"}
+    },
+    {"id": "preview", "type": "preview", "title": "预览", "inputs": {"request": "s"}},
+    {"id": "gen", "type": "generate", "title": "生成", "params": {"model": "gpt-image-2.5-sunburst"}, "inputs": {"prompt": "preview"}},
+    {"id": "clean", "type": "postprocess", "title": "后处理", "inputs": {"image": "gen"}},
+    {"id": "out", "type": "output", "title": "输出", "inputs": {"image": "clean"}}
+  ]
+}

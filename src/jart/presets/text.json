@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "name": "无参考纯文字＋画法段",
+  "description": "官方预设。不用参考图，只用内容文字和画法段出图；镜头只能用标准镜头词汇。",
+  "language": "zh",
+  "slots": {
+    "style": {"node": "style", "param": "text", "label": "画法段"},
+    "objects": {"node": "s", "param": "objects", "label": "物件设定（文字）", "required": false, "hint": "抽象地写物件设定；要精确就改用设定图"},
+    "camera": {"node": "s", "param": "camera", "label": "镜头", "required": false, "hint": "标准镜头词汇，如：越肩视角、受害者第一人称；不写 VP 坐标"},
+    "content": {"node": "s", "param": "content", "label": "内容", "hint": "只设计内容：画什么行为、哪些元素、元素怎样互动；不描述物件细节"},
+    "size_note": {"node": "s", "param": "size_note", "label": "目标尺寸", "required": false, "hint": "如：最终显示在约 130×65 的小图窗、一眼识别。"},
+    "size": {"node": "gen", "param": "size", "label": "出图尺寸", "default": "2048x1024"},
+    "quality": {"node": "gen", "param": "quality", "label": "质量档", "default": "high", "hint": "low / medium / high / xhigh / max"},
+    "background": {"node": "gen", "param": "background", "label": "背景", "required": false, "hint": "transparent / opaque / auto"}
+  },
+  "nodes": [
+    {"id": "style", "type": "text", "title": "画法段"},
+    {"id": "s", "type": "structure", "title": "结构", "inputs": {"style": "style"}},
+    {"id": "preview", "type": "preview", "title": "预览", "inputs": {"request": "s"}},
+    {"id": "gen", "type": "generate", "title": "生成", "params": {"model": "gpt-image-2.5-sunburst"}, "inputs": {"prompt": "preview"}},
+    {"id": "clean", "type": "postprocess", "title": "后处理", "inputs": {"image": "gen"}},
+    {"id": "out", "type": "output", "title": "输出", "inputs": {"image": "clean"}}
+  ]
+}

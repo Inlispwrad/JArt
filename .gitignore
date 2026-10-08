@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+# 本地素材库与运行记录（JART_HOME 指到仓库里时）
+.jart/

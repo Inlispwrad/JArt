@@ -1,0 +1,25 @@
+# 「人设＋物件＋构图参考替换」（swap）的输入。填好后：
+#   uv run jart plan swap -i examples/swap.inputs.toml    预览
+#   uv run jart run  swap -i examples/swap.inputs.toml    确认后运行
+# 图片路径相对于本文件。文字原样发送，用 {{char}} {{item}} {{ref}} 指代图片。
+
+char = "refs/人设.png"
+item = "refs/物件设定.png"
+item_role = "匕首设定"
+ref = "refs/内容参考图.png"
+
+style = """
+（画法段原文）
+"""
+
+replace = [
+  "把{{ref}}里的……换成{{char}}。",
+  "把{{ref}}里的……换成{{item}}。",
+  "画面里没有别的主体。",
+]
+action = "（谁、从哪到哪、做什么动作、作用在哪里）"
+size_note = "最终显示在约 130×65 的小图窗、一眼识别。"
+
+size = "2048x1024"
+quality = "high"
+# background = "transparent"
